@@ -23,3 +23,9 @@ Route::get('/', function () {
 Route::get('vehiculo', [VehiculoController::class, 'index'])->name('vehiculo.index');
 
 Route::post('vehiculo/add', [VehiculoController::class, 'store'])->name('vehiculo.store');
+
+//ver vehiculo
+Route::get('vehiculo/show/{id}', [VehiculoController::class, 'show']);
+
+//Eliminar un registro
+Route::delete('vehiculo/destroy/{id}', [VehiculoController::class, 'destroy']);

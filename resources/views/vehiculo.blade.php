@@ -8,33 +8,31 @@
     <style>
         *{
             margin: 0;
-            padding: 0
-            box-sizing: margin-box;
+            padding: 0;
+            box-sizing: border-box;
             box-shadow: none !important;
         }
     </style>
 
 
-
-
     {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
 
 
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
- --}}
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous">
+        </script>
+        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+     --}}
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -75,8 +73,6 @@
                     data-bs-target="#vehiculoAddModal">
                     Agregar
                 </button>
-
-                <label for="">Agregar</label>
             </div>
             <div class="border col-lg-10 col-md-10 col-sm-10">
                 <form action="" class="form_search justify-content-center mt-2">
@@ -182,7 +178,6 @@
             // Inicializando SELECT2
             $('.select2').select2();
 
-
             // Inicializando datatable
             table = $('#vehiculo_datatable').DataTable({
                 processing: true,
@@ -198,7 +193,7 @@
                     { data: 'paquete', name: 'paquete' },
                     { data: 'volumen', name: 'volumen' },
                     { data: null, defaultContent: '', orderable: false, searchable: false },
-                ], 
+                ],
                 columnDefs: [
                     {
                         targets: -1,
@@ -305,36 +300,96 @@
 
                 return false;
             });
-    });
 
+            $(document).on('click', '.show-vehiculo', function (event){
+                event.preventDefault();
+                var url = $(this).data('url');
 
-        /*
-        $(function(){
-            //Inicializando datatable
-            var table = $('#vehiculo_datatable').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: "{{ route('vehiculo.index') }}"
-                },
-                columns: [
-                    { data: 'compania_nombre', name: 'compania_nombre' },
-                    { data: 'placa', name: 'placa' },
-                    { data: 'vendedor_nombre', name: 'vendedor_nombre' },
-                    { data: 'peso', name: 'peso' },
-                    { data: 'paquete', name: 'paquete' },
-                    { data: 'volumen', name: 'volumen' },
-                    { data: null, defaultContent: '', orderable: false, searchable: false },
-                ]
+                $.ajax({
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    dataType: "json",
+                    success: function (data){
+                        console.log('Objeto enviado: ',data);
+                        let id = data.vehiculo.id;
+                        let placa = data.vehiculo.placa;
+                        let id_compania = data.vehiculo.id_compania;
+                        let peso = data.vehiculo.peso;
+                        let paquete = data.vehiculo.paquete;
+                        let volumen = data.vehiculo.volumen;
+                        let vendedor = data.vendedor.nombre;
+
+                        let compania = data.companias.find(c => c.id === id_compania)?.nombre;
+
+                        console.log(
+                            'ID VEHICULO: '+id
+                            +'\nPLACA: '+placa
+                            +'\nCOMPAÑIA: '+compania
+                            +'\nPESO: '+peso
+                            +'\nPAQUETE: '+paquete
+                            +'\nVENDEDOR: '+vendedor
+                            +'\nVOLUMEN: '+volumen
+                        );
+                    },
+                    errors:function (data){
+                        var errors = data.responseJson;
+                        console.log('Error: '+errors);
+                    }
+                });
             });
-            //Inicializando SELECT2
-            $('.select2').select2();
+
+            //eliminar registro
+            $(document).on('click', '.delete' ,function (){
+                let id = $(this).attr('data-id');
+
+                Swal.fire({
+                    title: '¿Está seguro de eliminar el registro?',
+                    icon: 'warning',
+                    showCancelButton:      true,
+                    confirmButtonColor:    '#d33',
+                    cancelButtonColor:     '#6c757d',
+                    confirmButtonText:     'Sí, eliminar',
+                    cancelButtonText:      'Cancelar'
+                }).then((result)=>{
+                    if(result.isConfirmed){
+                        $.ajax({
+                            url: "vehiculo/destroy/" + id,
+                            type: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success:function (data){
+                                $('#vehiculo_datatable').DataTable().ajax.reload();
+                                console.log('ID eliminado: '+id)
+                                Swal.fire('Eliminado',
+                                    'El registro ha sido eliminado correctamente',
+                                    'success'
+                                );
+                            },
+                            error:function (data){
+                                let errors = data.responseJSON;
+                                console.log(errors);
+                                Swal.fire('Error',
+                                    'Hubo un error al intentar eliminar el registro',
+                                    'error'
+                                );
+                            }
+                        });
+                    }else{
+                        Swal.fire('Vehiculo no eliminado',
+                            'El registro del vehículo no se ha eliminado',
+                            'info'
+                        );
+                    }
+                });
+            });
 
 
 
         });
-        */
-</script>
+    </script>
 
 </body>
 </html>

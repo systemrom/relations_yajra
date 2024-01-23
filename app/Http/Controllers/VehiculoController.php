@@ -32,7 +32,6 @@ class VehiculoController extends Controller
                 ->leftJoin('vendedors', 'vehiculo_vendedor.id_vendedor', '=', 'vendedors.id')
                 ->select('vehiculos.*', 'companias.nombre as compania_nombre', 'vendedors.nombre as vendedor_nombre');
 
-
             //Aplicamos el filtro por compania o placa de forma independiente o combinada
             if ($request->filled('compania') || $request->filled('placa')) {
                 $query->where(function ($query) use ($request) {
@@ -46,7 +45,7 @@ class VehiculoController extends Controller
                 });
 
                 //Log del filtro
-                Log::info('Filtro aplicado en la funcion index: Compañia = '.$request->input('compania').', Placa = '.$request->input('placa'));
+                Log::info('Filtro aplicado en el metodo index: Compañia = '.$request->input('compania').', Placa = '.$request->input('placa'));
             }
 
             $data = $query->get();
@@ -60,7 +59,7 @@ class VehiculoController extends Controller
 
     }
 
-    /* 
+    /*
         Funciona por COMPAÑIA O POR PLACA de forma independiente
         if ($request->filled('compania')) {
             $query->where('vehiculos.id_compania', $request->input('compania'));
@@ -85,7 +84,7 @@ class VehiculoController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -191,9 +190,10 @@ class VehiculoController extends Controller
             $vendedor->save(); //persistencia
 
             //QUery builder -> Funcionalidades propias de la base de datos
-            DB::table('vehiculo_vendedor')->insert(
-            ['id_vehiculo'=>$vehiculo->id, 'id_vendedor'=>$vendedor->id],
-            );
+            DB::table('vehiculo_vendedor')->insert([
+                'id_vehiculo'=>$vehiculo->id,
+                'id_vendedor'=>$vendedor->id
+            ],);
 
             return response()->json([
                 'message' => 'Vehículo y Vendedor registrados correctamente.',
@@ -220,6 +220,13 @@ class VehiculoController extends Controller
     public function show($id)
     {
         //
+        if(request()->ajax()){
+            $data = Vehiculo::find($id);
+            $data1 = Vendedor::find($id);
+            $data2 = Companias::all();
+            Log::info('DATA OBTENIDA DE VEHICULO: '.$data.' DATA OBTENIDA DEL VENDEDOR: '.$data1);
+            return response()->json(['vehiculo'=>$data, 'vendedor'=>$data1, 'companias'=>$data2]);
+        }
     }
 
     /**
@@ -253,6 +260,13 @@ class VehiculoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //Eliminar en ambas tablas
+        $data = Vehiculo::find($id);
+        $data->delete();
+        //De forma automática elimina el vendedor
+        $data1 = Vendedor::find($id);
+        $data1->delete($id);
+
+        Log::info('Vehiculo eliminado: '.$data.' Vendedor eliminado: '.$data1);
     }
 }
