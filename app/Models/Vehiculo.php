@@ -10,13 +10,18 @@ class Vehiculo extends Model
     use HasFactory;
 
     protected $fillable = ['placa', 'peso', 'paquete', 'volumen', 'id_compania'];
-    
+
     public function companias(){
         return $this->belongsTo(Companias::class, 'id_compania');
     }
 
     public function vendedor(){
         return $this->hasOne(Vendedor::class, 'id_vehiculo');
+    }
+
+    public function vehiculo_integracion()
+    {
+        return $this->hasOne(VehiculoIntegracion::class, 'id_vehiculo');
     }
 
 }

@@ -29,3 +29,7 @@ Route::get('vehiculo/show/{id}', [VehiculoController::class, 'show']);
 
 //Eliminar un registro
 Route::delete('vehiculo/destroy/{id}', [VehiculoController::class, 'destroy']);
+
+
+//Acceso a la API
+Route::get('vehicles/api', [VehiculoController::class, 'obtenerDataAPI']);

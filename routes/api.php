@@ -27,3 +27,6 @@ Route::post('/vehiculo', [VehiculoController::class, 'addApi']);
 //API para agregar compañia
 Route::post('/compania', [CompaniaController::class, 'addCompania']);
 
+//Listado de todos los vehiculos
+Route::get('/getVehiculos', [VehiculoController::class, 'listaVehiculos']);
+

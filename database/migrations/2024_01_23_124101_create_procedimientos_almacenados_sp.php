@@ -14,21 +14,24 @@ class CreateProcedimientosAlmacenadosSp extends Migration
      */
     public function up()
     {
-        /* Schema::create('procedimientos_almacenados_sp', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        }); */
-        $proced1 = "
-                        CREATE PROCEDURE insertarCompanias(
-                            IN c_nombre VARCHAR(60)
-                        )
-                        BEGIN 
-                            INSERT INTO companias (nombre)
-                            VALUES (c_nombre);
-                        END;
-                    ";
-        DB::unprepared($proced1);
+        $nombreProcedimiento = 'insertarCompanias';
 
+        // Verificar si el procedimiento almacenado ya existe antes de crearlo
+        $procedimientoExistente = DB::select("SHOW PROCEDURE STATUS WHERE Name = ?", [$nombreProcedimiento]);
+
+        if (empty($procedimientoExistente)) {
+            // Crear procedimiento almacenado para insertar compañías
+            $procedimientoInsertarCompanias = "
+                CREATE PROCEDURE insertarCompanias(
+                    IN c_nombre VARCHAR(60)
+                )
+                BEGIN
+                    INSERT INTO companias (nombre)
+                    VALUES (c_nombre);
+                END;
+            ";
+            DB::unprepared($procedimientoInsertarCompanias);
+        }
     }
 
     /**
