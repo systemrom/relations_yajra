@@ -30,3 +30,6 @@ Route::post('/compania', [CompaniaController::class, 'addCompania']);
 //Listado de todos los vehiculos
 Route::get('/getVehiculos', [VehiculoController::class, 'listaVehiculos']);
 
+//Busqueda de vehiculos
+Route::get('/getVehiculos/{id}', [VehiculoController::class, 'buscarVehiculo']);
+

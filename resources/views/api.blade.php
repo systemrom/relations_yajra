@@ -8,6 +8,6 @@
     <title>Document</title>
 </head>
 <body>
-    Hola mundo
+    <p>Acceso correcto a la API</p>
 </body>
 </html>
